@@ -1,5 +1,53 @@
-# Add /usr/local/bin to the PATH
-export PATH=/usr/local/bin:$PATH
+# Detect the operating system
+case "$(uname -s)" in
+  Darwin)
+    # MacOS specific commands here
+
+    # Add /usr/local/bin to the PATH
+    export PATH=/usr/local/bin:$PATH
+    # Custom aliases
+    alias ibrew='arch -arm64 brew'
+    alias python="/opt/homebrew/bin/python3.9"
+    alias pip="/opt/homebrew/bin/pip3.9"
+    alias morning='./Start\ Up/Start\ Up\ Script.txt'
+
+    # Update the prompt to include the virtualenv_info function
+    #export PROMPT='$(virtualenv_info)%n: (%1~) $vcs_info_msg_0_ -> '
+
+    # Add OpenJDK to the PATH and CPPFLAGS
+    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+    export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
+
+    # PyEnv Set up
+    export PYENV_ROOT="$HOME/.pyenv" 
+    export PATH="$PYENV_ROOT/bin:$PATH" 
+    eval "$(pyenv init --path)" 
+    eval "$(pyenv init -)"
+
+    # Virtualenvwrapper settings:
+    export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3.9
+    export WORKON_HOME=$HOME/.virtualenv
+    export VIRTUALENVWRAPPER_VIRTUALENV=/opt/homebrew/bin/virtualenv
+    export VIRTUALENVWRAPPER_WORKON_CD=1
+    export PROJECT_HOME=$HOME/projects
+
+    source /opt/homebrew/bin/virtualenvwrapper.sh
+
+    # NVM settings
+    # This loads nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+    export PATH="/usr/local/opt/mongodb-community@5.0/bin:$PATH"
+    export PATH="/opt/homebrew/opt/mongodb-community@5.0/bin:$PATH"
+
+    # pnpm
+    export PNPM_HOME="/Users/bruno.campos/Library/pnpm"
+    case ":$PATH:" in
+      *":$PNPM_HOME:"*) ;;
+      *) export PATH="$PNPM_HOME:$PATH" ;;
+    esac
+    # pnpm end
+esac
 
 # bat pager settings set to never
 export BAT_PAGER=""
@@ -12,12 +60,7 @@ GPG_TTY=$(tty)
 export GPG_TTY
 
 # Custom aliases
-alias morning='./Start\ Up/Start\ Up\ Script.txt'
 alias please=sudo
-alias ibrew='arch -arm64 brew'
-
-alias python="/opt/homebrew/bin/python3.9"
-alias pip="/opt/homebrew/bin/pip3.9"
 
 alias ls=' ls -lhF --time-style=long-iso --color=auto'
 alias ..="cd .."
@@ -173,42 +216,5 @@ function virtualenv_info() {
   fi
 }
 
-# Update the prompt to include the virtualenv_info function
-#export PROMPT='$(virtualenv_info)%n: (%1~) $vcs_info_msg_0_ -> '
-
-# Add OpenJDK to the PATH and CPPFLAGS
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
-
-# PyEnv Set up
-export PYENV_ROOT="$HOME/.pyenv" 
-export PATH="$PYENV_ROOT/bin:$PATH" 
-eval "$(pyenv init --path)" 
-eval "$(pyenv init -)"
-
-# Virtualenvwrapper settings:
-export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3.9
-export WORKON_HOME=$HOME/.virtualenv
-export VIRTUALENVWRAPPER_VIRTUALENV=/opt/homebrew/bin/virtualenv
-export VIRTUALENVWRAPPER_WORKON_CD=1
-export PROJECT_HOME=$HOME/projects
-
-source /opt/homebrew/bin/virtualenvwrapper.sh
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# NVM settings
-# This loads nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-export PATH="/usr/local/opt/mongodb-community@5.0/bin:$PATH"
-export PATH="/opt/homebrew/opt/mongodb-community@5.0/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="/Users/bruno.campos/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end

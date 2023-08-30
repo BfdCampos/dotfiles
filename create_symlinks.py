@@ -44,6 +44,43 @@ def install_neovim():
     init_vim_dest = os.path.expanduser('~/.config/nvim/init.vim')
     create_symlink(init_vim_source, init_vim_dest)
 
+def install_ohmyzsh_plugins():
+    print(f"{YELLOW}Installing Oh My Zsh plugins{RESET}")
+
+    zsh_custom_dir = os.path.expanduser(os.environ.get('ZSH_CUSTOM', '~/.oh-my-zsh/custom'))
+
+    # List of plugins and their git URLs
+    plugins = {
+        'zsh-autosuggestions': 'https://github.com/zsh-users/zsh-autosuggestions.git',
+        'zsh-syntax-highlighting': 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
+    }
+
+    # List of themes and their git URLs
+    themes = {
+        'powerlevel10k': 'https://github.com/romkatv/powerlevel10k.git'
+    }
+
+    # Install plugins
+    for plugin, url in plugins.items():
+        plugin_dir = f"{zsh_custom_dir}/plugins/{plugin}"
+        if not os.path.exists(plugin_dir):
+            print(f"{BLUE}Installing {plugin}{RESET}")
+            subprocess.run(["git", "clone", url, plugin_dir])
+            print(f"{GREEN}{plugin} installed{RESET}")
+        else:
+            print(f"{GREEN}{plugin} already exists{RESET}")
+
+    # Install themes
+    for theme, url in themes.items():
+        theme_dir = f"{zsh_custom_dir}/themes/{theme}"
+        if not os.path.exists(theme_dir):
+            print(f"{BLUE}Installing {theme}{RESET}")
+            subprocess.run(["git", "clone", "--depth=1", url, theme_dir])
+            print(f"{GREEN}{theme} installed{RESET}")
+        else:
+            print(f"{GREEN}{theme} already exists{RESET}")
+
+
 print(f"{YELLOW}=== Starting Automated Setup ==={RESET}")
 
 config_mapping = {
@@ -59,4 +96,7 @@ if __name__ == "__main__":
         create_symlink(src_path, dest_path)
 
     install_neovim()
+
+    install_ohmyzsh_plugins()
+
     print(f"{GREEN}=== Setup Complete ==={RESET}")
