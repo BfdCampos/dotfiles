@@ -6,9 +6,6 @@ case "$(uname -s)" in
     # Add /usr/local/bin to the PATH
     export PATH=/usr/local/bin:$PATH
     # Custom aliases
-    alias ibrew='arch -arm64 brew'
-    alias python="/opt/homebrew/bin/python3.9"
-    alias pip="/opt/homebrew/bin/pip3.9"
     alias morning='./Start\ Up/Start\ Up\ Script.txt'
 
     # Update the prompt to include the virtualenv_info function
