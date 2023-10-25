@@ -79,9 +79,8 @@ nmap <F8> :TagbarToggle<CR>
 " Disable preview for autocomplete
 set completeopt-=preview
 
-" Set colorscheme to jellybeans
-colorscheme nord
-let g:nord_background = 'none'
+" Set colorscheme to OceanicNext
+colorscheme OceanicNext
 
 " NERDTree configuration
 let g:NERDTreeDirArrowExpandable="+"
