@@ -44,10 +44,6 @@ case "$(uname -s)" in
       *) export PATH="$PNPM_HOME:$PATH" ;;
     esac
     # pnpm end
-    
-    # Go settings
-    export GOPATH=$HOME/go
-    export PATH=$PATH:$GOPATH/bin
 esac
 
 # bat pager settings set to never
