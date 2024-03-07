@@ -39,7 +39,7 @@ Plug 'https://github.com/ryanoasis/vim-devicons' " vim-devicons for developer ic
 Plug 'https://github.com/tc50cal/vim-terminal' " vim-terminal
 Plug 'https://github.com/preservim/tagbar' " tagbar for code navigation
 Plug 'https://github.com/terryma/vim-multiple-cursors' " vim-multiple-cursors
-" Plug 'github/copilot.vim' " copilot.vim for Git-Copilot integration
+Plug 'github/copilot.vim' " copilot.vim for Git-Copilot integration
 Plug 'sheerun/vim-polyglot' " vim-polyglot for language packs
 Plug 'pangloss/vim-javascript' " vim-javascript for JavaScript syntax highlighting
 Plug 'maxmellon/vim-jsx-pretty' " vim-jsx-pretty for JSX syntax highlighting
