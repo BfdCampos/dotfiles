@@ -79,8 +79,11 @@ nmap <F8> :TagbarToggle<CR>
 " Disable preview for autocomplete
 set completeopt-=preview
 
-" Set colorscheme to OceanicNext
-colorscheme OceanicNext
+" Set colorscheme
+let g:onedark_color_overrides = {
+\ "background": {"gui": "NONE", "cterm": "NONE", "cterm16": "NONE"}
+\}
+colorscheme onedark
 
 " NERDTree configuration
 let g:NERDTreeDirArrowExpandable="+"
