@@ -49,6 +49,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " fzf for fuzzy finding
 Plug 'junegunn/fzf.vim' " fzf.vim for fuzzy finding
 Plug 'elzr/vim-json' " vim-json for JSON syntax highlighting
 Plug 'Yggdroot/indentLine' " indentLine for indentation lines
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " coc.nvim for autocompletion
 
 " End Plug configuration
 call plug#end()
@@ -79,7 +80,7 @@ nmap <F8> :TagbarToggle<CR>
 " Disable preview for autocomplete
 set completeopt-=preview
 
-" Set colorscheme
+" Set colorscheme to onedark
 let g:onedark_color_overrides = {
 \ "background": {"gui": "NONE", "cterm": "NONE", "cterm16": "NONE"}
 \}
