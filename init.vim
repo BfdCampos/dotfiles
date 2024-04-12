@@ -50,6 +50,7 @@ Plug 'junegunn/fzf.vim' " fzf.vim for fuzzy finding
 Plug 'elzr/vim-json' " vim-json for JSON syntax highlighting
 Plug 'Yggdroot/indentLine' " indentLine for indentation lines
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " coc.nvim for autocompletion
+Plug 'nightsense/vimspectr' " vimspectr for color preview
 
 " End Plug configuration
 call plug#end()
@@ -80,10 +81,12 @@ nmap <F8> :TagbarToggle<CR>
 " Disable preview for autocomplete
 set completeopt-=preview
 
-" Set colorscheme to onedark
+" Set background to transparent
 let g:onedark_color_overrides = {
 \ "background": {"gui": "NONE", "cterm": "NONE", "cterm16": "NONE"}
 \}
+
+" Set colorscheme
 colorscheme onedark
 
 " NERDTree configuration
