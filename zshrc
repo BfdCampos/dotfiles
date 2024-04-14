@@ -15,12 +15,6 @@ case "$(uname -s)" in
     export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
     export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
 
-    # PyEnv Set up
-    export PYENV_ROOT="$HOME/.pyenv" 
-    export PATH="$PYENV_ROOT/bin:$PATH" 
-    eval "$(pyenv init --path)" 
-    eval "$(pyenv init -)"
-
     # Virtualenvwrapper settings:
     export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3.9
     export WORKON_HOME=$HOME/.virtualenv
