@@ -16,13 +16,13 @@ case "$(uname -s)" in
     export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
 
     # Virtualenvwrapper settings:
+    source virtualenvwrapper.sh
+
     export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3.9
-    export WORKON_HOME=$HOME/.virtualenv
-    export VIRTUALENVWRAPPER_VIRTUALENV=/opt/homebrew/bin/virtualenv
+    export WORKON_HOME=$HOME/.virtualenvs
+    # export VIRTUALENVWRAPPER_VIRTUALENV=/opt/homebrew/bin/virtualenvwrapper # Old way of doing it it seems
     export VIRTUALENVWRAPPER_WORKON_CD=1
     export PROJECT_HOME=$HOME/projects
-
-    source /opt/homebrew/bin/virtualenvwrapper.sh
 
     # NVM settings
     # This loads nvm
@@ -38,6 +38,14 @@ case "$(uname -s)" in
       *) export PATH="$PNPM_HOME:$PATH" ;;
     esac
     # pnpm end
+
+    #######################################################################################
+    ########################## Company Specific Settings ##################################
+    #######################################################################################
+    
+    ###### CLEO ######
+    # Add AWS SSO credentials
+    export AWS_PROFILE=AnalyticsEngineer-878877078763
 esac
 
 # bat pager settings set to never
