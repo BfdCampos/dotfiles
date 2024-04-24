@@ -46,6 +46,8 @@ case "$(uname -s)" in
     ###### CLEO ######
     # Add AWS SSO credentials
     export AWS_PROFILE=AnalyticsEngineer-878877078763
+
+    alias aws-login='aws sso login --profile AnalyticsEngineer-878877078763'
 esac
 
 # bat pager settings set to never
