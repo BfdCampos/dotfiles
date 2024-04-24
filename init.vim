@@ -68,6 +68,7 @@ nnoremap <C-t> :NERDTreeToggle<CR>
 " New mapping for fzf.vim
 nnoremap <C-p> :Files<CR>
 nnoremap <C-g> :Rg<CR>
+" You need to have ripgrep installed for this to work (brew install ripgrep)
 
 " Auto replace all highlight text
 vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
