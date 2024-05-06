@@ -70,6 +70,8 @@ alias cp='cp -iv'
 alias v="nvim"
 alias ffluff='sqlfluff fix -f --show-lint-violations '
 
+alias gdtool='git difftool '
+
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
   Linux)
