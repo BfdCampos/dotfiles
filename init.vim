@@ -108,3 +108,6 @@ autocmd FileType tagbar call TagbarOpenZsh()
 
 " javascript indenting
 autocmd BufNewFile,BufRead *.js,*.jsx setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+
+" SQL file indentation
+autocmd BufNewFile,BufRead *.sql setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
