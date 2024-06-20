@@ -71,6 +71,8 @@ alias v="nvim"
 alias ffluff='sqlfluff fix -f --show-lint-violations '
 
 alias gdtool='git difftool '
+alias gdiff='git difftool '
+alias gcdiff='git difftool main..$(git_current_branch)'
 
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
@@ -164,7 +166,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search history)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -243,3 +245,6 @@ function virtualenv_info() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 eval "$(gh copilot alias -- zsh)"
+
+# Created by `pipx` on 2024-06-18 16:04:46
+export PATH="$PATH:/Users/brunocampos/.local/bin"
