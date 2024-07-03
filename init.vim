@@ -51,6 +51,7 @@ Plug 'elzr/vim-json' " vim-json for JSON syntax highlighting
 Plug 'Yggdroot/indentLine' " indentLine for indentation lines
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " coc.nvim for autocompletion
 Plug 'nightsense/vimspectr' " vimspectr for color preview
+Plug 'gennaro-tedesco/nvim-jqx' " nvim-jqx for jqx syntax highlighting
 
 " End Plug configuration
 call plug#end()

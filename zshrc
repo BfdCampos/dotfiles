@@ -69,10 +69,13 @@ alias cp='cp -iv'
 
 alias v="nvim"
 alias ffluff='sqlfluff fix -f --show-lint-violations '
+alias fflufff='sqlfluff fix -f --show-lint-violations -v --FIX-EVEN-UNPARSABLE '
 
 alias gdtool='git difftool '
 alias gdiff='git difftool '
 alias gcdiff='git difftool main..$(git_current_branch)'
+
+alias sql='duckdb -c '
 
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
