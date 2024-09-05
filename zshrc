@@ -77,6 +77,10 @@ alias gcdiff='git difftool main..$(git_current_branch)'
 
 alias sql='duckdb -c '
 
+alias sauce='source ~/.zshrc'
+
+alias cd='z '
+
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
   Linux)
@@ -251,3 +255,7 @@ eval "$(gh copilot alias -- zsh)"
 
 # Created by `pipx` on 2024-06-18 16:04:46
 export PATH="$PATH:/Users/brunocampos/.local/bin"
+
+export PATH=$HOME/.rill:$PATH # Added by Rill install
+
+eval "$(zoxide init zsh)"
