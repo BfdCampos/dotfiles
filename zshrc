@@ -81,6 +81,12 @@ alias sauce='source ~/.zshrc'
 
 alias cd='z '
 
+# Add git configs
+# Personal gpg M3 Cleo mac
+alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey B8F1F8621278D49F'
+# Cleo gpg M3 Cleo mac
+alias gitconfigcleo='git config user.name "Bruno Campos" && git config user.email "bruno@meetcleo.com" && git config user.signingkey 2834E1F0C0E7C8D1'
+
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
   Linux)
@@ -259,3 +265,4 @@ export PATH="$PATH:/Users/brunocampos/.local/bin"
 export PATH=$HOME/.rill:$PATH # Added by Rill install
 
 eval "$(zoxide init zsh)"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
