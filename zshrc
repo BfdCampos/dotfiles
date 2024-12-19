@@ -81,6 +81,8 @@ alias sauce='source ~/.zshrc'
 
 alias cd='z '
 
+alias cl='clear'
+
 # Add git configs
 # Personal gpg M3 Cleo mac
 alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey B8F1F8621278D49F'
