@@ -85,9 +85,9 @@ alias cl='clear'
 
 # Add git configs
 # Personal gpg M3 Cleo mac
-alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey B8F1F8621278D49F'
+alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey 7783E1F6A44D97B5D06F32FDA36BFB88B3217C2B'
 # Cleo gpg M3 Cleo mac
-alias gitconfigcleo='git config user.name "Bruno Campos" && git config user.email "bruno@meetcleo.com" && git config user.signingkey 2834E1F0C0E7C8D1'
+alias gitconfigcleo='git config user.name "Bruno Campos" && git config user.email "bruno@meetcleo.com" && git config user.signingkey E0A5BA070CAEEAF290C13B9A7C867AAC0E30CEDD'
 
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
@@ -259,7 +259,7 @@ function virtualenv_info() {
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-eval "$(gh copilot alias -- zsh)"
+# eval "$(gh copilot alias -- zsh)"
 
 # Created by `pipx` on 2024-06-18 16:04:46
 export PATH="$PATH:/Users/brunocampos/.local/bin"
@@ -268,3 +268,12 @@ export PATH=$HOME/.rill:$PATH # Added by Rill install
 
 eval "$(zoxide init zsh)"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PYENV_ROOT=$(brew --prefix)/var/pyenv
+export PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
+export PATH=/Users/brunocampos/.local/bin:$PATH
+source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
+source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
+export CLOUDSDK_PYTHON=/Users/brunocampos/.pyenv/versions/3.9.10/bin/python
+export OAUTHLIB_RELAX_TOKEN_SCOPE=1
+source /Users/brunocampos/src/github.com/monzo/analytics/dbt/misc/shell/source.sh

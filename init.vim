@@ -52,6 +52,7 @@ Plug 'Yggdroot/indentLine' " indentLine for indentation lines
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " coc.nvim for autocompletion
 Plug 'nightsense/vimspectr' " vimspectr for color preview
 Plug 'gennaro-tedesco/nvim-jqx' " nvim-jqx for jqx syntax highlighting
+Plug 'tpope/vim-fugitive' " vim-fugitive for Git integration
 
 " End Plug configuration
 call plug#end()

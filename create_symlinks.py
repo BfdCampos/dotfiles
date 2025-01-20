@@ -116,6 +116,32 @@ def install_ohmyzsh_plugins():
     else:
         print(f"{YELLOW}Skipping Oh My Zsh plugin installation{RESET}")
 
+def install_node():
+    if get_user_confirmation("Do you want to install Node.js?"):
+        print(f"{YELLOW}Installing Node.js{RESET}")
+
+        os_type = platform.system()
+
+        if os_type == "Linux":
+            print(f"{BLUE}Installing Node.js on Linux{RESET}")
+            try:
+                subprocess.run(["sudo", "apt", "update"], check=True)
+                subprocess.run(["sudo", "apt", "install", "nodejs"], check=True)
+                subprocess.run(["sudo", "apt", "install", "npm"], check=True)
+                print(f"{GREEN}Node.js installed successfully{RESET}")
+            except subprocess.CalledProcessError as e:
+                print(f"{RED}Failed installing Node.js. Error: {e}{RESET}")
+        elif os_type == "Darwin":
+            print(f"{BLUE}Installing Node.js on macOS{RESET}")
+            try:
+                subprocess.run(["brew", "install", "node"], check=True)
+                print(f"{GREEN}Node.js installed successfully{RESET}")
+            except subprocess.CalledProcessError as e:
+                print(f"{RED}Failed installing Node.js. Error: {e}{RESET}")
+        else:
+            print(f"{RED}Unsupported OS: {os_type}{RESET}")
+            return
+
 
 print(f"{YELLOW}=== Starting Automated Setup ==={RESET}")
 
@@ -134,5 +160,7 @@ if __name__ == "__main__":
     install_neovim()
 
     install_ohmyzsh_plugins()
+
+    install_node()
 
     print(f"{GREEN}=== Setup Complete ==={RESET}")
