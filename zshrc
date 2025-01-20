@@ -84,10 +84,10 @@ alias cd='z '
 alias cl='clear'
 
 # Add git configs
-# Personal gpg M3 Cleo mac
-alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey 7783E1F6A44D97B5D06F32FDA36BFB88B3217C2B'
-# Cleo gpg M3 Cleo mac
-alias gitconfigcleo='git config user.name "Bruno Campos" && git config user.email "bruno@meetcleo.com" && git config user.signingkey E0A5BA070CAEEAF290C13B9A7C867AAC0E30CEDD'
+# Personal gpg M4 Monzo Mac
+alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey A36BFB88B3217C2B'
+# Monzo gpg M4 Monzo Mac
+alias gitconfigmonzo='git config user.name "Bruno Campos" && git config user.email "brunocampos@monzo.com" && git config user.signingkey 7C867AAC0E30CEDD'
 
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
