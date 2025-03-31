@@ -5,8 +5,6 @@ case "$(uname -s)" in
 
     # Add /usr/local/bin to the PATH
     export PATH=/usr/local/bin:$PATH
-    # Custom aliases
-    alias morning='./Start\ Up/Start\ Up\ Script.txt'
 
     # Update the prompt to include the virtualenv_info function
     #export PROMPT='$(virtualenv_info)%n: (%1~) $vcs_info_msg_0_ -> '
@@ -39,15 +37,13 @@ case "$(uname -s)" in
     esac
     # pnpm end
 
+    # poetry
+    export PATH="$HOME/.local/bin:$PATH"
+
     #######################################################################################
     ########################## Company Specific Settings ##################################
     #######################################################################################
     
-    ###### CLEO ######
-    # Add AWS SSO credentials
-    export AWS_PROFILE=AnalyticsEngineer-878877078763
-
-    alias aws-login='aws sso login --profile AnalyticsEngineer-878877078763'
 esac
 
 # bat pager settings set to never
@@ -74,6 +70,7 @@ alias fflufff='sqlfluff fix -f --show-lint-violations -v --FIX-EVEN-UNPARSABLE '
 alias gdtool='git difftool '
 alias gdiff='git difftool '
 alias gcdiff='git difftool main..$(git_current_branch)'
+alias gfug='git ls-files --others --exclude-standard | grep'
 
 alias sql='duckdb -c '
 
@@ -185,6 +182,21 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search history)
 
 source $ZSH/oh-my-zsh.sh
 
+# alias specific oh my zsh alias overwrite
+unalias ll
+function ll() {
+  command ls -lah
+  if [[ -f README.md ]]; then
+    if command -v bat &>/dev/null; then
+      echo "\n--- README.md ---\n"
+      bat README.md
+    else
+      echo "\n--- README.md ---\n"
+      cat README.md
+    fi
+  fi
+}
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -277,3 +289,12 @@ source /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completio
 export CLOUDSDK_PYTHON=/Users/brunocampos/.pyenv/versions/3.9.10/bin/python
 export OAUTHLIB_RELAX_TOKEN_SCOPE=1
 source /Users/brunocampos/src/github.com/monzo/analytics/dbt/misc/shell/source.sh
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/brunocampos/.lmstudio/bin"
+export PATH=/Users/brunocampos/.local/bin:$PATH
+export PATH=/Users/brunocampos/.local/bin:$PATH
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+eval "$(rbenv init -)"
