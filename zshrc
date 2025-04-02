@@ -67,9 +67,22 @@ alias v="nvim"
 alias ffluff='sqlfluff fix -f --show-lint-violations '
 alias fflufff='sqlfluff fix -f --show-lint-violations -v --FIX-EVEN-UNPARSABLE '
 
+# Get the current branch name
+git_current_branch() {
+  git branch --show-current 2> /dev/null || 
+  git rev-parse --abbrev-ref HEAD 2> /dev/null
+}
+
+# Get the default branch name
+git_default_branch() {
+  git symbolic-ref refs/remotes/origin/HEAD 2> /dev/null | 
+  sed "s@^refs/remotes/origin/@@" ||
+  echo "main" # Fallback to "main" if the command fails
+}
+
 alias gdtool='git difftool '
 alias gdiff='git difftool '
-alias gcdiff='git difftool main..$(git_current_branch)'
+alias gcdiff='git difftool $(git_default_branch)..$(git_current_branch)'
 alias gfug='git ls-files --others --exclude-standard | grep'
 
 alias sql='duckdb -c '
