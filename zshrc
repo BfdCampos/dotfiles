@@ -80,6 +80,7 @@ git_default_branch() {
   echo "main" # Fallback to "main" if the command fails
 }
 
+alias gcom='git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@")'
 alias gdtool='git difftool '
 alias gdiff='git difftool '
 alias gcdiff='git difftool $(git_default_branch)..$(git_current_branch)'
