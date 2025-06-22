@@ -90,6 +90,7 @@ alias sql='duckdb -c '
 
 alias sauce='source ~/.zshrc'
 
+# Use zoxide for cd on all platforms
 alias cd='z '
 
 alias cl='clear'
@@ -293,6 +294,17 @@ export PATH="$PATH:/Users/brunocampos/.local/bin"
 export PATH=$HOME/.rill:$PATH # Added by Rill install
 
 eval "$(zoxide init zsh)"
+
+# Fix circular dependency for zoxide on Linux
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  # Override _z_cd to use builtin cd directly, avoiding the alias
+  _z_cd() {
+    builtin cd "$@" || return "$?"
+    if [ "$_ZO_ECHO" = "1" ]; then
+      echo "$PWD"
+    fi
+  }
+fi
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export PYENV_ROOT=$(brew --prefix)/var/pyenv
 export PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
