@@ -149,12 +149,20 @@ config_mapping = {
     'bashrc': '~/.bashrc',
     'zshrc': '~/.zshrc',
     'p10k.zsh': '~/.p10k.zsh',
+    'CLAUDE.md': '~/.claude/CLAUDE.md',
 }
 
 if __name__ == "__main__":
     for source, dest in config_mapping.items():
         src_path = os.path.expanduser(f'~/dotfiles/{source}')
         dest_path = os.path.expanduser(dest)
+        
+        # Ensure parent directory exists for destination
+        dest_dir = os.path.dirname(dest_path)
+        if not os.path.exists(dest_dir):
+            print(f"{BLUE}Creating directory {dest_dir}{RESET}")
+            os.makedirs(dest_dir)
+        
         create_symlink(src_path, dest_path)
 
     install_neovim()
