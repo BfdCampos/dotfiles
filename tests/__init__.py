@@ -1,0 +1,1 @@
+"""Tests for dotfiles management system."""

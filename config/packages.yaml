@@ -1,0 +1,59 @@
+# Package Installation Configuration
+# Defines packages to install and their installation methods
+
+packages:
+  neovim:
+    description: "Hyperextensible Vim-based text editor"
+    optional: true
+    installers:
+      darwin:
+        method: homebrew
+        package: neovim
+      linux:
+        method: apt
+        package: neovim
+    post_install:
+      - action: create_directory
+        path: ~/.config/nvim
+        
+  nodejs:
+    description: "JavaScript runtime built on Chrome's V8 engine"
+    optional: true
+    installers:
+      darwin:
+        method: homebrew
+        package: node
+      linux:
+        method: apt
+        packages:
+          - nodejs
+          - npm
+          
+oh_my_zsh_plugins:
+  description: "Zsh plugins and themes"
+  optional: true
+  custom_installer: install_oh_my_zsh_plugins
+  plugins:
+    - name: zsh-autosuggestions
+      url: https://github.com/zsh-users/zsh-autosuggestions.git
+      path: plugins/zsh-autosuggestions
+    - name: zsh-syntax-highlighting
+      url: https://github.com/zsh-users/zsh-syntax-highlighting.git
+      path: plugins/zsh-syntax-highlighting
+  themes:
+    - name: powerlevel10k
+      url: https://github.com/romkatv/powerlevel10k.git
+      path: themes/powerlevel10k
+      clone_args: ["--depth=1"]
+
+# Package manager configurations
+package_managers:
+  homebrew:
+    check_command: ["brew", "--version"]
+    install_command: ["brew", "install"]
+    update_command: ["brew", "update"]
+    
+  apt:
+    check_command: ["apt", "--version"]
+    install_command: ["sudo", "apt", "install", "-y"]
+    update_command: ["sudo", "apt", "update"]

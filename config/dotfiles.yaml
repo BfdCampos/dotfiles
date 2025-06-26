@@ -1,0 +1,42 @@
+# Dotfiles Configuration
+# This file defines all the symlinks to be created
+
+symlinks:
+  # Shell configurations
+  - source: bashrc
+    destination: ~/.bashrc
+    description: "Bash configuration"
+    
+  - source: zshrc
+    destination: ~/.zshrc
+    description: "Zsh configuration"
+    
+  - source: p10k.zsh
+    destination: ~/.p10k.zsh
+    description: "Powerlevel10k theme configuration"
+    
+  # Claude configuration
+  - source: CLAUDE.md
+    destination: ~/.claude/CLAUDE.md
+    description: "Claude AI assistant configuration"
+    create_parent: true
+    
+  # Neovim configuration
+  - source: init.vim
+    destination: ~/.config/nvim/init.vim
+    description: "Neovim configuration"
+    create_parent: true
+    optional: true  # Only create if user has neovim
+
+# Backup configuration
+backup:
+  enabled: true
+  directory: ~/dotfiles_backup
+  timestamp_format: "%Y%m%d_%H%M%S"
+  
+# General settings
+settings:
+  interactive: true  # Ask for confirmation
+  verbose: true      # Show detailed output
+  dry_run: false     # Preview mode
+  force: false       # Overwrite without backup

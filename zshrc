@@ -79,8 +79,13 @@ git_default_branch() {
   sed "s@^refs/remotes/origin/@@" ||
   echo "main" # Fallback to "main" if the command fails
 }
+main() {
+  git symbolic-ref refs/remotes/origin/HEAD 2> /dev/null | 
+  sed "s@^refs/remotes/origin/@@" ||
+  echo "main" # Fallback to "main" if the command fails
+}
 
-alias gcom='git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@")'
+alias gcom='git checkout $(git for-each-ref --format="%(refname:short)" refs/remotes/origin/main refs/remotes/origin/master 2>/dev/null | head -1 | sed "s/origin\///")'
 alias gdtool='git difftool '
 alias gdiff='git difftool '
 alias gcdiff='git difftool $(git_default_branch)..$(git_current_branch)'
@@ -100,6 +105,13 @@ alias cl='clear'
 alias gitconfigpersonal='git config user.name "Bruno Campos" && git config user.email "brunofdcampos@hotmail.com" && git config user.signingkey A36BFB88B3217C2B'
 # Monzo gpg M4 Monzo Mac
 alias gitconfigmonzo='git config user.name "Bruno Campos" && git config user.email "brunocampos@monzo.com" && git config user.signingkey 7C867AAC0E30CEDD'
+
+# if tree is installed then alias
+if command -v tree &>/dev/null; then
+  alias tr="tree -a -I '.git|node_modules|bower_components|vendor|dist|build|coverage|__pycache__|.venv|.idea|.vscode' --dirsfirst --noreport --prune"
+else
+  echo "tree command not found, skipping alias creation."
+fi
 
 # if linux, alias open to xdg-open, if mac, alias open to open else open to explorer.exe
 case "$(uname -s)" in
@@ -324,3 +336,49 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 eval "$(rbenv init -)"
+
+# For adbt target output
+copy_target() {
+  local dest_name="${1:-dbt_target}"
+  local dest_path="$HOME/src/github.com/monzo/analytics/dbt/$dest_name"
+
+  container_id=$(docker ps -q --filter "ancestor=us-central1-docker.pkg.dev/monzo-build/dbt-monzo-shell/dbt-monzo-shell:master")
+
+  if [[ -z "$container_id" ]]; then
+    echo "No running dbt container found."
+    return 1
+  fi
+
+  tmp_target=$(docker exec "$container_id" sh -c 'find /tmp/ -type d -path "*/target" -print0 | xargs -0 stat --format "%Y %n" | sort -nr | head -1 | cut -d" " -f2-')
+
+  if [[ -z "$tmp_target" ]]; then
+    echo "Could not find a target folder in /tmp/"
+    return 1
+  fi
+
+  tmp_root=$(dirname "$tmp_target")
+
+  docker cp "${container_id}:${tmp_root}" ./_tmp_target_copy
+
+  if [[ ! -d "./_tmp_target_copy" ]]; then
+    echo "Copy failed — _tmp_target_copy does not exist."
+    return 1
+  fi
+
+  real_target_path=$(find ./_tmp_target_copy -type d -name target | head -n 1)
+
+  if [[ -z "$real_target_path" ]]; then
+    echo "Could not find the target folder inside _tmp_target_copy."
+    rm -rf ./_tmp_target_copy
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$dest_path")"
+  mv "$real_target_path" "$dest_path"
+
+  rm -rf ./_tmp_target_copy
+
+}
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
