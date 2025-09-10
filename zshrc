@@ -380,5 +380,110 @@ copy_target() {
 
 }
 
+# Monzo specific terminal commands
+
+# To capture an image of your terminal command output in dbt-monzo shell
+terminal_capture() {
+
+    # Check if termshot is installed
+    if ! command -v termshot &> /dev/null; then
+        echo "❌ termshot is not installed"
+        echo "Install it with: brew install homeport/tap/termshot"
+        return 1
+    fi
+
+    # Check if command was provided
+    if [ -z "$1" ]; then
+        echo "Usage: terminal_capture <command>"
+        echo "Example: terminal_capture adbt run -s my_model"
+        return 1
+    fi
+    
+    # Find the dbt-monzo-shell container ID
+    CONTAINER_ID=$(docker ps --format "{{.ID}}" --filter "ancestor=us-central1-docker.pkg.dev/monzo-build/dbt-monzo-shell/dbt-monzo-shell:master" | head -1)
+    
+    # Check if container was found
+    if [ -z "$CONTAINER_ID" ]; then
+        echo "Error: No dbt-monzo-shell container found running"
+        echo "Run 'dbt-monzo' first to start the container"
+        return 1
+    fi
+    
+    # Generate filename with timestamp
+    FILENAME="termshot_output_$(date +%Y%m%d_%H%M%S).png"
+    
+    echo "📸 Found container: $CONTAINER_ID"
+    echo "🏃 Running: $@"
+    echo "---"
+    
+    # Run termshot and save to file
+    termshot --filename "$FILENAME" -- "docker exec -t $CONTAINER_ID $@ 2>&1"
+    
+    # Copy the PNG to clipboard
+    osascript -e "set the clipboard to (read (POSIX file \"$PWD/$FILENAME\") as «class PNGf»)"
+    
+    echo "✅ Screenshot saved to: $FILENAME"
+    echo "📋 Copied to clipboard!"
+}
+
+# Alias for even quicker access
+alias tcap='terminal_capture'
+
+# run dbt-monzo shell commands from any terminal
+monzo() {
+  CONTAINER_ID=$(docker ps --format "{{.ID}}" --filter "ancestor=us-central1-docker.pkg.dev/monzo-build/dbt-monzo-shell/dbt-monzo-shell:master" | head -1)
+  if [ -z "$CONTAINER_ID" ]; then
+    echo "Error: No dbt-monzo-shell container found running"
+    echo "Run 'docker run' command to start the container"
+    return 1
+  fi
+
+  # Check if running in an interactive terminal
+  if [ -t 1 ] && [ -t 0 ]; then
+    # Interactive mode (humans)
+    docker exec -it "$CONTAINER_ID" "$@"
+  else
+    # Non-interactive mode (Claude Code, scripts, etc.)
+    docker exec "$CONTAINER_ID" "$@"
+  fi
+}
+
+# run modelgen commands from any terminal
+modelgen() {
+  CONTAINER_ID=$(docker ps --format "{{.ID}}" --filter "ancestor=us-central1-docker.pkg.dev/monzo-build/dbt-monzo-shell/dbt-monzo-shell:master" | head -1)
+  if [ -z "$CONTAINER_ID" ]; then
+    echo "Error: No dbt-monzo-shell container found running"
+    echo "Run 'dbt-monzo' first to start the container"
+    return 1
+  fi
+
+  # Check if running in an interactive terminal
+  if [ -t 1 ] && [ -t 0 ]; then
+    docker exec -it "$CONTAINER_ID" modelgen "$@"
+  else
+    docker exec "$CONTAINER_ID" modelgen "$@"
+  fi
+}
+
+# run adbt commands from any terminal
+adbt() {
+  CONTAINER_ID=$(docker ps --format "{{.ID}}" --filter "ancestor=us-central1-docker.pkg.dev/monzo-build/dbt-monzo-shell/dbt-monzo-shell:master" | head -1)
+  if [ -z "$CONTAINER_ID" ]; then
+    echo "Error: No dbt-monzo-shell container found running"
+    echo "Run 'dbt-monzo' first to start the container"
+    return 1
+  fi
+
+  # Check if running in an interactive terminal
+  if [ -t 1 ] && [ -t 0 ]; then
+    docker exec -it "$CONTAINER_ID" adbt "$@"
+  else
+    docker exec "$CONTAINER_ID" adbt "$@"
+  fi
+}
+
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+
+# dbt aliases
+alias dbtf=/Users/brunocampos/.local/bin/dbt
