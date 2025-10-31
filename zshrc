@@ -6,6 +6,9 @@ case "$(uname -s)" in
     # Add /usr/local/bin to the PATH
     export PATH=/usr/local/bin:$PATH
 
+    # Go PATH 
+    export GOPATH=$HOME/go
+
     # Update the prompt to include the virtualenv_info function
     #export PROMPT='$(virtualenv_info)%n: (%1~) $vcs_info_msg_0_ -> '
 
@@ -94,9 +97,6 @@ alias gfug='git ls-files --others --exclude-standard | grep'
 alias sql='duckdb -c '
 
 alias sauce='source ~/.zshrc'
-
-# Use zoxide for cd on all platforms
-alias cd='z '
 
 alias cl='clear'
 
@@ -305,7 +305,7 @@ export PATH="$PATH:/Users/brunocampos/.local/bin"
 
 export PATH=$HOME/.rill:$PATH # Added by Rill install
 
-eval "$(zoxide init zsh)"
+eval "$(zoxide init zsh --cmd cd)"
 
 # Fix circular dependency for zoxide on Linux
 if [[ "$(uname -s)" != "Darwin" ]]; then
@@ -487,3 +487,4 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # dbt aliases
 alias dbtf=/Users/brunocampos/.local/bin/dbt
+[ -f ${GOPATH}/src/github.com/monzo/starter-pack/zshrc ] && source ${GOPATH}/src/github.com/monzo/starter-pack/zshrc
