@@ -316,6 +316,11 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
       echo "$PWD"
     fi
   }
+  
+  # On Ubuntu/Debian, bat is installed as batcat
+  if command -v batcat >/dev/null 2>&1; then
+    alias bat='batcat'
+  fi
 fi
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export PYENV_ROOT=$(brew --prefix)/var/pyenv
