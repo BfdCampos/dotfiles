@@ -124,6 +124,6 @@ dotfiles/
    ```
 3. Run `./setup.py` to create the symlink
 
-## Legacy Script
+## Legacy
 
-The original `create_symlinks.py` script is still available for reference but is replaced by the new modular system.
+The original `create_symlinks.py` has been renamed to `create_symlinks.py.legacy` for reference. Use `setup.py` for all dotfile management.

@@ -34,25 +34,5 @@
 
 ## BigQuery CLI Usage
 
-When accessing BigQuery data, always specify the project explicitly:
-
-### Check table schemas (INFORMATION_SCHEMA only)
-
-```bash
-bq query --project_id=monzo-analytics --use_legacy_sql=false "SELECT column_name, data_type FROM \`monzo-analytics.dims.INFORMATION_SCHEMA.COLUMNS\` WHERE table_name = 'vulnerable_customer_logs_dim' ORDER BY ordinal_position"
-```
-
-### Count rows (safe for sensitive tables)
-
-```bash  
-bq query --project_id=monzo-analytics --use_legacy_sql=false "SELECT COUNT(*) as row_count FROM \`monzo-analytics.dims.vulnerable_customer_logs_dim\`"
-```
-
-### Export schema to file
-
-```bash
-bq query --project_id=monzo-analytics --use_legacy_sql=false --format=csv --quiet "SELECT column_name FROM \`monzo-analytics.dims.INFORMATION_SCHEMA.COLUMNS\` WHERE table_name = 'vulnerable_customer_logs_dim' ORDER BY ordinal_position" | tail -n +2 > /tmp/columns.txt
-```
-
-**IMPORTANT:** For sensitive data (like staff/people data), ONLY use INFORMATION_SCHEMA queries or COUNT(*). Never query actual data content.
+When querying BigQuery data, use the `bigquery` skill for command patterns and data sensitivity guidelines.
 

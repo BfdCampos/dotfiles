@@ -20,7 +20,28 @@ symlinks:
     destination: ~/.claude/CLAUDE.md
     description: "Claude AI assistant configuration"
     create_parent: true
-    
+
+  # Claude skills (generic, reusable)
+  - source: claude/skills/apple-mail/SKILL.md
+    destination: ~/.claude/skills/apple-mail/SKILL.md
+    description: "Apple Mail AppleScript automation skill"
+    create_parent: true
+
+  - source: claude/skills/bigquery/SKILL.md
+    destination: ~/.claude/skills/bigquery/SKILL.md
+    description: "BigQuery CLI skill"
+    create_parent: true
+
+  - source: claude/skills/github-cli/SKILL.md
+    destination: ~/.claude/skills/github-cli/SKILL.md
+    description: "GitHub CLI context gathering skill"
+    create_parent: true
+
+  - source: claude/skills/mermaid/SKILL.md
+    destination: ~/.claude/skills/mermaid/SKILL.md
+    description: "Mermaid diagram styling skill"
+    create_parent: true
+
   # Neovim configuration
   - source: init.vim
     destination: ~/.config/nvim/init.vim
