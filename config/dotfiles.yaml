@@ -42,6 +42,11 @@ symlinks:
     description: "Mermaid diagram styling skill"
     create_parent: true
 
+  - source: claude/skills/pr-description/SKILL.md
+    destination: ~/.claude/skills/pr-description/SKILL.md
+    description: "PR description writing skill"
+    create_parent: true
+
   # Neovim configuration
   - source: init.vim
     destination: ~/.config/nvim/init.vim
