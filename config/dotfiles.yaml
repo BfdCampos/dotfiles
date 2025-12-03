@@ -47,6 +47,11 @@ symlinks:
     description: "PR description writing skill"
     create_parent: true
 
+  - source: claude/skills/documentation/SKILL.md
+    destination: ~/.claude/skills/documentation/SKILL.md
+    description: "Documentation writing style guide"
+    create_parent: true
+
   # Neovim configuration
   - source: init.vim
     destination: ~/.config/nvim/init.vim
