@@ -36,6 +36,36 @@
 
 When querying BigQuery data, use the `bigquery` skill for command patterns and data sensitivity guidelines.
 
+## Claude Skills Management
+
+Skills are stored in `~/dotfiles/claude/skills/` and symlinked to `~/.claude/skills/`. This keeps them version-controlled and portable.
+
+**Structure:**
+```
+dotfiles/claude/skills/
+├── apple-mail/SKILL.md
+├── bigquery/SKILL.md
+├── documentation/SKILL.md
+├── github-cli/SKILL.md
+├── mermaid/SKILL.md
+└── pr-description/SKILL.md
+```
+
+**Adding a new skill:**
+1. Create the skill in `~/.claude/skills/<skill-name>/SKILL.md` (Claude Code creates it here)
+2. Copy the skill to dotfiles: `mkdir -p ~/dotfiles/claude/skills/<skill-name>` then copy the SKILL.md
+3. Verify files match: `diff ~/.claude/skills/<skill-name>/SKILL.md ~/dotfiles/claude/skills/<skill-name>/SKILL.md`
+4. Replace with symlink: `ln -sf ~/dotfiles/claude/skills/<skill-name>/SKILL.md ~/.claude/skills/<skill-name>/SKILL.md`
+5. Add entry to `config/dotfiles.yaml` under the `symlinks:` section:
+   ```yaml
+   - source: claude/skills/<skill-name>/SKILL.md
+     destination: ~/.claude/skills/<skill-name>/SKILL.md
+     description: "<skill description>"
+     create_parent: true
+   ```
+
+**On a new machine:** Run `python setup.py` to create all symlinks from dotfiles.
+
 ## Learning Mode
 
 **Learning mode is NOT the default.** Only enter learning mode when:
