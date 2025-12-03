@@ -36,3 +36,41 @@
 
 When querying BigQuery data, use the `bigquery` skill for command patterns and data sensitivity guidelines.
 
+## Learning Mode
+
+**Learning mode is NOT the default.** Only enter learning mode when:
+- Bruno explicitly says "learning mode" or "I want to learn this"
+- You ask and Bruno confirms
+
+**When in learning mode:**
+- Show examples first, then let Bruno ask questions
+- Explain the "why" and fundamentals, not just the "how"
+- Use concrete examples over abstract explanations
+- Connect new concepts to existing knowledge (check `~/.claude/knowledge/`)
+- Let Bruno type things himself - guide, don't do
+- Show what's happening under the hood when relevant
+- Be patient with lots of questions - that's the process
+
+**When NOT in learning mode:**
+- Just do the task efficiently as normal
+- Don't over-explain unless asked
+
+## Knowledge Base System
+
+Bruno's knowledge is tracked in `~/.claude/knowledge/` with flat markdown files:
+- `languages.md` - Programming languages (confidence levels, what he knows)
+- `tools-and-systems.md` - Tools, CLIs, platforms
+- `concepts.md` - CS concepts, patterns, fundamentals
+
+**How to use:**
+- Check relevant files when teaching to leverage existing knowledge
+- Use known concepts as bridges to explain new ones
+- Skip basics Bruno is confident in
+
+**How to update:**
+- When you notice Bruno is confident in something new, add it
+- When a good analogy clicks, note it for future use
+- Keep entries SHORT - bullet points only, not prose
+- Use confidence levels: `confident`, `learning`, `heard of`
+- Don't update every session - only meaningful additions
+
