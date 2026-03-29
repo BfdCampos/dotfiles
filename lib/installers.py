@@ -51,37 +51,40 @@ class PackageInstaller:
                 print_error(f"Error: {e.stderr}")
             raise
             
-    def install_with_homebrew(self, package: str) -> bool:
+    def install_with_homebrew(self, package: str, cask: bool = False) -> bool:
         """Install package using Homebrew."""
         if not self.check_command_exists(["brew", "--version"]):
             print_error("Homebrew is not installed")
             return False
             
-        print_info(f"Installing {package} with Homebrew...")
+        cmd = ["brew", "install"]
+        if cask:
+            cmd.append("--cask")
+        cmd.append(package)
+        
+        print_info(f"Installing {package} with Homebrew{' (cask)' if cask else ''}...")
         try:
-            self.run_command(["brew", "install", package])
+            self.run_command(cmd)
             print_success(f"{package} installed successfully")
             return True
         except subprocess.CalledProcessError:
             return False
             
-    def install_with_apt(self, packages: List[str]) -> bool:
-        """Install packages using apt."""
-        if not self.check_command_exists(["apt", "--version"]):
-            print_error("apt is not available")
-            return False
-            
-        print_info(f"Installing {', '.join(packages)} with apt...")
+    def install_with_script(self, url: str) -> bool:
+        """Install package using a shell script."""
+        print_info(f"Installing from script: {url}")
         try:
-            # Update package list first
-            self.run_command(["sudo", "apt", "update"])
-            # Install packages
-            self.run_command(["sudo", "apt", "install", "-y"] + packages)
-            print_success(f"{', '.join(packages)} installed successfully")
+            # Using curl | sh pattern
+            cmd = f"curl -fsSL {url} | sh"
+            if self.dry_run:
+                print_info(f"[DRY RUN] Would run: {cmd}")
+                return True
+            subprocess.run(cmd, shell=True, check=True)
+            print_success("Script installation completed")
             return True
         except subprocess.CalledProcessError:
             return False
-            
+
     def install_package(self, package_config: Dict[str, Any]) -> bool:
         """Install a package based on configuration.
         
@@ -106,19 +109,30 @@ class PackageInstaller:
         platform_config = installers.get(self.platform)
         
         if not platform_config:
-            print_warning(f"No installer configured for {name} on {self.platform}")
-            return False
+            # Check for general installers (not platform specific)
+            if 'method' in package_config:
+                platform_config = package_config
+            else:
+                print_warning(f"No installer configured for {name} on {self.platform}")
+                return False
             
         method = platform_config.get('method')
         
         if method == 'homebrew':
             package_name = platform_config.get('package', name)
             return self.install_with_homebrew(package_name)
+        elif method == 'homebrew_cask':
+            package_name = platform_config.get('package', name)
+            return self.install_with_homebrew(package_name, cask=True)
         elif method == 'apt':
             packages = platform_config.get('packages', [platform_config.get('package', name)])
             if isinstance(packages, str):
                 packages = [packages]
             return self.install_with_apt(packages)
+        elif method == 'script':
+            url = platform_config.get('url')
+            if url:
+                return self.install_with_script(url)
         elif method == 'custom':
             custom_installer = platform_config.get('installer')
             if custom_installer:
@@ -132,6 +146,27 @@ class PackageInstaller:
             self.run_post_install_actions(package_config['post_install'])
             
         return True
+
+    def install_oh_my_zsh(self) -> bool:
+        """Install Oh My Zsh if not present."""
+        zsh_dir = expand_path("~/.oh-my-zsh")
+        if os.path.exists(zsh_dir):
+            print_info("Oh My Zsh already installed")
+            return True
+            
+        print_info("Installing Oh My Zsh...")
+        cmd = 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
+        if self.dry_run:
+            print_info(f"[DRY RUN] Would run: {cmd}")
+            return True
+            
+        try:
+            subprocess.run(cmd, shell=True, check=True)
+            print_success("Oh My Zsh installed")
+            return True
+        except subprocess.CalledProcessError:
+            print_error("Failed to install Oh My Zsh")
+            return False
         
     def run_post_install_actions(self, actions: List[Dict[str, Any]]) -> None:
         """Run post-installation actions."""
