@@ -121,6 +121,13 @@ def setup_symlinks(config: dict, args: argparse.Namespace, dotfiles_dir: str) ->
     try:
         created = symlink_manager.create_symlinks_from_config(symlinks_config)
         print_success(f"\nCreated {created}/{len(symlinks_config)} symlinks")
+        
+        # Manage active shell modules
+        symlink_manager.manage_active_modules(
+            sh_dir=config.get('sh_directory', 'sh'),
+            active_dir=config.get('active_sh_directory', '~/.zsh_active')
+        )
+        
         return True
     except Exception as e:
         print_error(f"Error creating symlinks: {e}")
@@ -134,36 +141,33 @@ def install_packages(packages_config: dict, args: argparse.Namespace) -> bool:
     print_info("\n=== Installing packages ===")
     
     packages = packages_config.get('packages', {})
-    if not packages:
-        print_warning("No packages configured")
-        return True
-        
+    
     # Create package installer
     installer = PackageInstaller(
         interactive=not args.yes,
         dry_run=args.dry_run
     )
-    
-    # Install packages
+
+    # Handle Oh My Zsh installation
+    if 'oh_my_zsh' in packages_config:
+        installer.install_oh_my_zsh()
+
+    # Install regular packages
     success_count = 0
+    total_packages = len(packages)
+    
     for package_name, package_config in packages.items():
         package_config['name'] = package_name
-        
-        # Handle custom installers
-        if 'custom_installer' in package_config:
-            custom_name = package_config['custom_installer']
-            if installer.run_custom_installer(custom_name, package_config):
-                success_count += 1
-        else:
-            if installer.install_package(package_config):
-                success_count += 1
+        if installer.install_package(package_config):
+            success_count += 1
                 
     # Handle Oh My Zsh plugins separately if configured
     if 'oh_my_zsh_plugins' in packages_config:
         if installer.install_oh_my_zsh_plugins(packages_config['oh_my_zsh_plugins']):
             success_count += 1
+            total_packages += 1
             
-    print_success(f"\nInstalled {success_count}/{len(packages)} packages")
+    print_success(f"\nInstalled {success_count}/{total_packages} package groups")
     return True
 
 
