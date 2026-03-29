@@ -28,7 +28,68 @@ packages:
         packages:
           - nodejs
           - npm
-          
+
+  tree:
+    description: "Recursive directory listing program"
+    installers:
+      darwin:
+        method: homebrew
+        package: tree
+      linux:
+        method: apt
+        package: tree
+
+  zoxide:
+    description: "Smarter cd command"
+    installers:
+      darwin:
+        method: homebrew
+        package: zoxide
+      linux:
+        method: script
+        url: "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh"
+
+  rbenv:
+    description: "Groom your app's Ruby environment"
+    installers:
+      darwin:
+        method: homebrew
+        package: rbenv
+      linux:
+        method: apt
+        package: rbenv
+
+  bat:
+    description: "A cat(1) clone with wings"
+    installers:
+      darwin:
+        method: homebrew
+        package: bat
+      linux:
+        method: apt
+        package: bat
+
+  pyenv:
+    description: "Python version management"
+    installers:
+      darwin:
+        method: homebrew
+        package: pyenv
+      linux:
+        method: script
+        url: "https://pyenv.run"
+
+  gcloud-cli:
+    description: "Google Cloud CLI"
+    installers:
+      darwin:
+        method: homebrew_cask
+        package: gcloud-cli
+
+oh_my_zsh:
+  description: "Oh My Zsh installation"
+  install_command: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
+
 oh_my_zsh_plugins:
   description: "Zsh plugins and themes"
   optional: true
@@ -52,7 +113,11 @@ package_managers:
     check_command: ["brew", "--version"]
     install_command: ["brew", "install"]
     update_command: ["brew", "update"]
-    
+  
+  homebrew_cask:
+    check_command: ["brew", "--version"]
+    install_command: ["brew", "install", "--cask"]
+
   apt:
     check_command: ["apt", "--version"]
     install_command: ["sudo", "apt", "install", "-y"]
