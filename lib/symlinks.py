@@ -159,6 +159,58 @@ class SymlinkManager:
                 
         return True
         
+    def manage_active_modules(self, sh_dir: str, active_dir: str) -> bool:
+        """Interactively manage active shell modules.
+        
+        Args:
+            sh_dir: Directory containing available shell modules (relative to dotfiles_dir)
+            active_dir: Directory where active modules should be linked
+            
+        Returns:
+            True if modules were managed successfully
+        """
+        source_dir = os.path.join(self.dotfiles_dir, sh_dir)
+        dest_dir = expand_path(active_dir)
+        
+        if not os.path.exists(source_dir):
+            print_warning(f"Shell modules directory not found: {source_dir}")
+            return True
+            
+        if not self.dry_run:
+            os.makedirs(dest_dir, exist_ok=True)
+            
+        print_info(f"\n=== Managing shell modules in {sh_dir} ===")
+        
+        available_modules = [f for f in os.listdir(source_dir) if f.endswith('.zsh')]
+        
+        if not available_modules:
+            print_info("No shell modules found.")
+            return True
+            
+        for module in available_modules:
+            module_source = os.path.join(sh_dir, module)
+            module_dest = os.path.join(active_dir, module)
+            
+            # Check if currently active
+            is_active = os.path.exists(expand_path(module_dest))
+            
+            prompt = f"Enable module {module}?"
+            if is_active:
+                prompt = f"Module {module} is already enabled. Keep it enabled?"
+                
+            if get_user_confirmation(prompt):
+                self.create_symlink(
+                    source=module_source,
+                    destination=module_dest,
+                    description=f"Active shell module: {module}"
+                )
+            else:
+                if is_active:
+                    print_info(f"Disabling module: {module}")
+                    self.remove_symlink(module_dest)
+                    
+        return True
+
     def rollback(self) -> None:
         """Remove all created symlinks (for error recovery)."""
         print_info("Rolling back created symlinks...")
