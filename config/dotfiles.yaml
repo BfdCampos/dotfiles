@@ -58,6 +58,11 @@ symlinks:
     description: "Monthly household budget calculator"
     create_parent: true
 
+  - source: claude/skills/visualisation/SKILL.md
+    destination: ~/.claude/skills/visualisation/SKILL.md
+    description: "HTML visualisation generation skill for explanatory reports"
+    create_parent: true
+
   # Claude commands (portable slash commands)
   - source: claude/commands/handoff.md
     destination: ~/.claude/commands/handoff.md
