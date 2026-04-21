@@ -131,6 +131,20 @@ style MySubgraph fill:none,stroke:#8b5cf6,stroke-width:2px,stroke-dasharray:5 5,
 - `stroke-dasharray:5 5` creates a dashed border (optional, looks clean)
 - `color:#...` sets the subgraph label colour to match the border
 
+## Line Breaks in Node Labels
+
+### ❌ WRONG — `\n` renders as literal text
+```mermaid
+A(["First line\nSecond line"])
+```
+
+### ✅ CORRECT — Use `<br/>` for multi-line labels
+```mermaid
+A(["First line<br/>Second line"])
+B[("Tips File<br/>(YAML/JSON)")]
+C(["Tips Engine<br/>pick + cycle"])
+```
+
 ## Link Styling
 
 ```mermaid
@@ -220,7 +234,7 @@ Invoke this skill when creating:
 
 ## GitHub-Specific Notes
 
-1. **No Font Awesome** — GitHub's Mermaid renderer doesn't support FA icons
-2. **No HTML** — Can't use `<br>` or other HTML in node labels
+1. **No Font Awesome** — GitHub's Mermaid renderer doesn't support `fa:fa-*` icons, they render as text
+2. **Line breaks use `<br/>`** — Use `<br/>` for multi-line node labels, not `\n` (which renders literally)
 3. **Quote labels with spaces** — `subgraph X["Label"]` not `subgraph X [Label]`
 4. **Test locally** — Use [mermaid.live](https://mermaid.live) to preview before committing

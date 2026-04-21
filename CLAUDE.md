@@ -4,6 +4,8 @@
 - Exceptions to BESA are allowed for proper nouns, acronyms, and specific terms.
 - Exceptions are also allowed for coding languages and general code since syntax is often standardised in American English.
 - Use British English spelling for all other words, specifically for documentation, README files, comments in code, user facing text, and any other text outputted that is not code.
+- NEVER use em-dashes (—) anywhere. Use commas, full stops, colons, or restructure the sentence instead.
+- NEVER use the bold-keyword-dash pattern in lists (e.g. `- **Word** — explanation`). Just write plain list items. If a list item needs a label, use a sub-header or a colon without bolding.
 - NEVER assume the time or date. Always use bash commands to get the current time or date if needed. E.g. `date +"%Y-%m-%d %H:%M:%S"` to get the current date and time.
 - ALWAYS use bash commands to do mathematical calculations. EVEN for simple calculations. E.g. `echo "5 + 3" | bc` to get the result of 5 + 3. USE this for ALL calculations without exception.
 
@@ -38,18 +40,7 @@ When querying BigQuery data, use the `bigquery` skill for command patterns and d
 
 ## Claude Skills Management
 
-Skills are stored in `~/dotfiles/claude/skills/` and symlinked to `~/.claude/skills/`. This keeps them version-controlled and portable.
-
-**Structure:**
-```
-dotfiles/claude/skills/
-├── apple-mail/SKILL.md
-├── bigquery/SKILL.md
-├── documentation/SKILL.md
-├── github-cli/SKILL.md
-├── mermaid/SKILL.md
-└── pr-description/SKILL.md
-```
+Skills are stored in `~/dotfiles/claude/skills/` and symlinked to `~/.claude/skills/`. Rules (auto-loaded guidelines) are stored in `~/dotfiles/claude/rules/` and symlinked to `~/.claude/rules/`. This keeps them version-controlled and portable.
 
 **Adding a new skill:**
 1. Create the skill in `~/.claude/skills/<skill-name>/SKILL.md` (Claude Code creates it here)
@@ -65,6 +56,17 @@ dotfiles/claude/skills/
    ```
 
 **On a new machine:** Run `python setup.py` to create all symlinks from dotfiles.
+
+## Voice Profile
+
+A writing voice profile lives at `~/.claude/rules/voice.md`. Use it when drafting anything on Bruno's behalf (Slack messages, docs, proposals, PR descriptions, emails, tickets). Do NOT apply it to normal working conversation.
+
+Actively maintain this profile:
+- After direct feedback on tone ("too formal", "that doesn't sound like me", "more casual"), immediately update `~/.claude/rules/voice.md` with the specific correction.
+- When Bruno accepts a drafted piece without pushback, especially if the tone was a judgement call, note what worked.
+- If you notice new patterns in how Bruno writes (from his messages, his edits to your drafts, or his phrasing preferences), add them to the voice profile. Don't wait to be asked.
+
+A capture script at `~/.claude/scripts/capture_voice.py` can analyse session logs for voice patterns. It outputs a statistical report of writing habits.
 
 ## Learning Mode
 
@@ -103,4 +105,76 @@ Bruno's knowledge is tracked in `~/.claude/knowledge/` with flat markdown files:
 - Keep entries SHORT - bullet points only, not prose
 - Use confidence levels: `confident`, `learning`, `heard of`
 - Don't update every session - only meaningful additions
+
+## Worktree Workspace Workflow
+
+**ALWAYS work in a worktree when making file changes that will be committed.** The main repo checkout is for read-only context, exploration, and conversation only. Before creating or editing any files intended for a commit, find an available worktree workspace and work there. This applies to ALL repos, not just analytics.
+
+Skip this only when the user explicitly says to work in the main repo.
+
+Do NOT use Claude Code's built-in `EnterWorktree`/`ExitWorktree` tools. Those create session-scoped worktrees in `.claude/worktrees/` with random names. We manage our own persistent workspaces instead.
+
+### Naming convention
+
+Worktrees live as sibling directories of the main repo, named `{repo}-a`, `{repo}-b`, ..., `{repo}-z`. If all 26 are taken, continue with `{repo}-alpha`, `{repo}-beta`, `{repo}-gamma`, `{repo}-delta`, etc.
+
+Example for a repo at `/path/to/analytics`:
+- `/path/to/analytics-a`
+- `/path/to/analytics-b`
+- etc.
+
+### Parking branches and availability detection
+
+Each workspace has a **parking branch** named `_park/{repo}-{letter}`. This is purely a marker for availability.
+
+A workspace is **free** if:
+- It is on its `_park/` branch
+- Its working tree is clean
+
+A workspace is **in use** if:
+- It is on any other branch, OR
+- It has uncommitted changes
+
+Legacy worktrees without parking branches should be treated as in use.
+
+### At the start of a task requiring changes
+
+1. List existing worktrees: `git worktree list`
+2. For each worktree, check if it's free (on a `_park/` branch with clean tree)
+3. If one is free, claim it:
+   ```bash
+   git -C /path/to/workspace fetch origin master
+   git -C /path/to/workspace reset --hard origin/master
+   git -C /path/to/workspace checkout -b feature-branch-name
+   ```
+4. If none are free, create the next one in the naming sequence:
+   ```bash
+   git worktree add /path/to/{repo}-{next-letter} -b _park/{repo}-{next-letter} origin/master
+   git -C /path/to/{repo}-{next-letter} checkout -b feature-branch-name
+   ```
+5. Use **absolute paths** to the worktree for ALL file operations (Read, Write, Edit, Bash, etc.)
+
+### Releasing a workspace
+
+When the user says work is done (PR merged, branch no longer needed):
+```bash
+git -C /path/to/workspace checkout _park/{repo}-{letter}
+git -C /path/to/workspace reset --hard origin/master
+git -C /path/to/workspace clean -fd
+```
+
+Do NOT release automatically. Only release when the user explicitly asks.
+
+### Key rules
+
+- NEVER commit to the main repo checkout directly
+- Use `git -C /path/to/worktree` for all git commands (consistent with the no-cd rule)
+- Use absolute paths to the worktree for all file tool operations
+- One task per worktree at a time
+- Always check for free worktrees before creating new ones
+- Multiple branches may be used in a single worktree over time, that is fine
+
+## Legacy Memory
+
+Before Claude Code had native auto-memory, we used a custom memory system at `~/personal_projects/claude-memory/`. That project is now retired, but some older memories and context may still live there if you need to reference them.
 

@@ -42,14 +42,31 @@ symlinks:
     description: "Mermaid diagram styling skill"
     create_parent: true
 
-  - source: claude/skills/pr-description/SKILL.md
-    destination: ~/.claude/skills/pr-description/SKILL.md
-    description: "PR description writing skill"
+  # Claude rules (auto-loaded guidelines)
+  - source: claude/rules/pr-descriptions.md
+    destination: ~/.claude/rules/pr-descriptions.md
+    description: "PR description guidelines (WHY-first)"
     create_parent: true
 
   - source: claude/skills/documentation/SKILL.md
     destination: ~/.claude/skills/documentation/SKILL.md
     description: "Documentation writing style guide"
+    create_parent: true
+
+  - source: claude/skills/budget/SKILL.md
+    destination: ~/.claude/skills/budget/SKILL.md
+    description: "Monthly household budget calculator"
+    create_parent: true
+
+  # Claude commands (portable slash commands)
+  - source: claude/commands/handoff.md
+    destination: ~/.claude/commands/handoff.md
+    description: "Handoff command: summarise work for a future agent"
+    create_parent: true
+
+  - source: claude/commands/pickup.md
+    destination: ~/.claude/commands/pickup.md
+    description: "Pickup command: resume work from a previous handoff"
     create_parent: true
 
   # Neovim configuration
