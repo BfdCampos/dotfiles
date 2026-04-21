@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+
+# Company-specific shell modules (these live in ~/.zsh_active/ directly)
+sh/*.zsh

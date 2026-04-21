@@ -10,31 +10,9 @@ case "$(uname -s)" in
     # Go PATH 
     export GOPATH=$HOME/go
 
-    # Add OpenJDK to the PATH and CPPFLAGS
-    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-    export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
-
-    # Virtualenvwrapper settings:
-    export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3.11
-    export WORKON_HOME=$HOME/.virtualenvs
-    export VIRTUALENVWRAPPER_VIRTUALENV=/opt/homebrew/bin/virtualenv
-    export VIRTUALENVWRAPPER_WORKON_CD=1
-    export PROJECT_HOME=$HOME/projects
-    source /opt/homebrew/bin/virtualenvwrapper.sh
-
     # NVM settings
     export NVM_DIR="$HOME/.nvm"
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-    export PATH="/usr/local/opt/mongodb-community@5.0/bin:$PATH"
-    export PATH="/opt/homebrew/opt/mongodb-community@5.0/bin:$PATH"
-
-    # pnpm
-    export PNPM_HOME="$HOME/Library/pnpm"
-    case ":$PATH:" in
-      *":$PNPM_HOME:"*) ;;
-      *) export PATH="$PNPM_HOME:$PATH" ;;
-    esac
-    # pnpm end
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
 
     # poetry
     export PATH="$HOME/.local/bin:$PATH"
@@ -92,6 +70,8 @@ if command -v tree &>/dev/null; then
   alias tr="tree -a -I '.git|node_modules|bower_components|vendor|dist|build|coverage|__pycache__|.venv|.idea|.vscode' --dirsfirst --noreport --prune"
 fi
 
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 # Enable Powerlevel10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -126,14 +106,6 @@ else
   autoload -Uz compinit && compinit -C
 fi
 
-function virtualenv_info() {
-  if [[ -n "$VIRTUAL_ENV" ]]; then
-    echo -n "%F{blue}(venv)%f "
-  else
-    echo -n "%F{red}(no-venv)%f "
-  fi
-}
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -158,6 +130,7 @@ if [ -d "/opt/homebrew/share/google-cloud-sdk" ]; then
   source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
   source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
 fi
+export CLOUDSDK_PYTHON=/opt/homebrew/bin/python3.13
 
 # Rbenv
 if command -v rbenv &>/dev/null; then
@@ -166,5 +139,18 @@ fi
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# dbt aliases
-alias dbtf=$HOME/.local/bin/dbt
+# ai ask
+ai() {
+  local spin='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  local pid
+  claude -p "$*" &
+  pid=$!
+  while kill -0 $pid 2>/dev/null; do
+    for ((i=0; i<${#spin}; i++)); do
+      printf "\r${spin:$i:1} Thinking..."
+      sleep 0.1
+    done
+  done
+  printf "\r\033[K"
+  wait $pid
+}
