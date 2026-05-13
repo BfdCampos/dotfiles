@@ -154,3 +154,12 @@ ai() {
   printf "\r\033[K"
   wait $pid
 }
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/brunocampos/.lmstudio/bin"
+# End of LM Studio CLI section
+
+# Claude Code
+export CLAUDE_CODE_NO_FLICKER=1
+alias ca='claude agents'
+
