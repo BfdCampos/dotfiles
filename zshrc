@@ -117,20 +117,38 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Python/Pipx
 export PATH="$PATH:$HOME/.local/bin"
 
-# Zoxide
-eval "$(zoxide init zsh --cmd cd)"
+# Zoxide - only on macOS for now to avoid recursion issues on Ubuntu
+case "$(uname -s)" in
+  Darwin)
+    eval "$(zoxide init zsh --cmd cd)"
+    ;;
+  Linux)
+    # On Linux, use zoxide with 'z' command instead of overriding cd
+    if command -v zoxide &>/dev/null; then
+      eval "$(zoxide init zsh)"
+    fi
+    ;;
+esac
 
-# Pyenv
-export PYENV_ROOT=$(brew --prefix)/var/pyenv
-export PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
+# Pyenv - macOS only
+case "$(uname -s)" in
+  Darwin)
+    export PYENV_ROOT=$(brew --prefix)/var/pyenv
+    export PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+    if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
+    ;;
+esac
 
-# Google Cloud SDK
-if [ -d "/opt/homebrew/share/google-cloud-sdk" ]; then
-  source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
-  source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
-fi
-export CLOUDSDK_PYTHON=/opt/homebrew/bin/python3.13
+# Google Cloud SDK - macOS only
+case "$(uname -s)" in
+  Darwin)
+    if [ -d "/opt/homebrew/share/google-cloud-sdk" ]; then
+      source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
+      source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
+    fi
+    export CLOUDSDK_PYTHON=/opt/homebrew/bin/python3.13
+    ;;
+esac
 
 # Rbenv
 if command -v rbenv &>/dev/null; then
@@ -155,8 +173,12 @@ ai() {
   wait $pid
 }
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/brunocampos/.lmstudio/bin"
+# Added by LM Studio CLI (lms) - macOS only
+case "$(uname -s)" in
+  Darwin)
+    export PATH="$PATH:/Users/brunocampos/.lmstudio/bin"
+    ;;
+esac
 # End of LM Studio CLI section
 
 # Claude Code
