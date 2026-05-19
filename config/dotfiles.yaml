@@ -73,6 +73,11 @@ symlinks:
     description: "HTML visualisation generation skill for explanatory reports"
     create_parent: true
 
+  - source: claude/skills/council/SKILL.md
+    destination: ~/.claude/skills/council/SKILL.md
+    description: "Council of subagents to scrutinise proposals, PRs, and ideas"
+    create_parent: true
+
   # Claude commands (portable slash commands)
   - source: claude/commands/handoff.md
     destination: ~/.claude/commands/handoff.md
