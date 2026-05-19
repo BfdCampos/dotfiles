@@ -48,6 +48,16 @@ symlinks:
     description: "PR description guidelines (WHY-first)"
     create_parent: true
 
+  - source: claude/rules/voice.md
+    destination: ~/.claude/rules/voice.md
+    description: "Writing voice profile for drafting on Bruno's behalf"
+    create_parent: true
+
+  - source: claude/skills/datetime/SKILL.md
+    destination: ~/.claude/skills/datetime/SKILL.md
+    description: "Date/time fetching skill"
+    create_parent: true
+
   - source: claude/skills/documentation/SKILL.md
     destination: ~/.claude/skills/documentation/SKILL.md
     description: "Documentation writing style guide"
@@ -72,6 +82,22 @@ symlinks:
   - source: claude/commands/pickup.md
     destination: ~/.claude/commands/pickup.md
     description: "Pickup command: resume work from a previous handoff"
+    create_parent: true
+
+  - source: claude/commands/pr-slack.md
+    destination: ~/.claude/commands/pr-slack.md
+    description: "PR Slack: format a review request for Slack"
+    create_parent: true
+
+  # Claude scripts
+  - source: claude/scripts/status-line.sh
+    destination: ~/.claude/status-line.sh
+    description: "Claude Code status line (context bar, model, git, PR)"
+    create_parent: true
+
+  - source: claude/scripts/capture_voice.py
+    destination: ~/.claude/scripts/capture_voice.py
+    description: "Voice pattern analyser for session logs"
     create_parent: true
 
   # Neovim configuration
