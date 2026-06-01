@@ -15,6 +15,33 @@ This skill provides guidance on creating beautiful, professional Mermaid diagram
 4. **No Font Awesome icons** — GitHub doesn't support `fa:fa-*` icons, they render as text
 5. **Quote subgraph labels** — Use `subgraph Name["Label Text"]` syntax
 6. **Define classDef styles at the top** — Keep all styling together for maintainability
+7. **Render and self-check**: auto-layout makes its own routing choices, so always preview the rendered image and iterate until the lines are easy to follow
+
+## Render, check, and iterate (do this every time)
+
+Writing valid Mermaid is not the goal; producing a diagram a person can actually follow is. Mermaid's auto-layout (dagre) decides where nodes sit and how edges route, so a diagram that looks fine in source often renders as spaghetti. Always render it, look at it as a reader, and iterate before you ship.
+
+1. Render to an image and open it. Mermaid-cli with a dark background mimics GitHub:
+
+   ```bash
+   npx -y @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.png -b "#0d1117"
+   ```
+
+   Put just the Mermaid code in `diagram.mmd` (the diagram only, no surrounding fence markers). [mermaid.live](https://mermaid.live) works for a quick paste-and-preview too.
+
+2. Judge it as a reader, not the author:
+   - Is the start obvious, and the end?
+   - Can you trace every arrow from tail to head without losing it in a crossing?
+   - Are related nodes near each other, and does nothing float unconnected?
+
+3. If the lines tangle, fix the layout, not just the colours. Techniques that work:
+   - Lay the main flow out as lanes (`flowchart LR` with `direction TB` inside each subgraph) so it reads start-to-end in one direction.
+   - Cut secondary edges that create a web (test-coverage arrows, every cross-reference). Show the primary flow and put the rest in prose.
+   - Keep nodes beside what uses them (data models right after the code that builds them) so the arrows stay short.
+   - Anchor a disconnected group with a single link rather than letting it drift to a corner (one "consumed later" edge beats a floating node).
+   - Route cross-cutting concerns (errors, logging) to one node with as few edges as possible.
+
+4. Re-render and repeat until it is easy to follow. A diagram you need the legend to trace is not done.
 
 ## The Golden Rule: Dark Fills + Light Strokes
 
