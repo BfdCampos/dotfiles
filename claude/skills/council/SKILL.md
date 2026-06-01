@@ -168,7 +168,8 @@ This step is informational, not a blocking gate. Display it and proceed to launc
 ## Step 7: Launch all subagents in parallel
 
 Launch ALL council members simultaneously in a single message using the Agent tool. Every subagent must use:
-- `model: "opus"`
+- `model: "opus"` (the most capable Opus model available)
+- Maximum reasoning effort and the largest available context window. Where the harness exposes effort or context-length settings for subagents, set them to maximum. Otherwise rely on inheritance from the parent session, which should be running the strongest configuration (e.g. Opus at 1M context, max effort).
 
 All agents run in parallel. Do NOT launch them sequentially.
 
