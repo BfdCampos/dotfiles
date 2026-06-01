@@ -94,6 +94,11 @@ symlinks:
     description: "PR Slack: format a review request for Slack"
     create_parent: true
 
+  - source: claude/commands/ops.md
+    destination: ~/.claude/commands/ops.md
+    description: "Ops: command centre for task triage, planning, and dispatch"
+    create_parent: true
+
   # Claude scripts
   - source: claude/scripts/status-line.sh
     destination: ~/.claude/status-line.sh
