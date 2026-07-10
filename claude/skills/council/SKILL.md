@@ -19,8 +19,9 @@ This tool is not a substitute for human review on high-stakes decisions. It surf
 
 ## Step 1: Parse the invocation
 
-The user will invoke this as `/council [N] <target>` where:
+The user will invoke this as `/council [N] [model=<model>] <target>` where:
 - `N` (optional) is the number of council members. Default is 3.
+- `model=<model>` (optional) overrides the model the council members run on. If omitted, they run on the session's default model (see Step 7).
 - `<target>` is a file path, GitHub PR URL, Notion page URL, general URL, or inline text/idea.
 
 If N is not provided, default to 3 (advocate, neutral, critic). For high-stakes reviews, recommend N=5 to the user. If only a number is given with no target, ask the user what they want reviewed.
@@ -30,7 +31,7 @@ If N is not provided, default to 3 (advocate, neutral, critic). For high-stakes 
 - N must be at least 1. If the user passes 0 or a negative number, default to 3 and tell them.
 - For N > 10, warn the user about token cost and confirm before proceeding.
 - If the content is very brief AND low-stakes (a phrasing question, a small naming decision), suggest N=1. But do not conflate short content with low importance: a one-sentence architecture decision or policy change deserves the default N regardless of length.
-- If the target cannot be resolved (file not found, URL unreachable, PR not accessible), tell the user immediately rather than launching agents with no content.
+- If the target cannot be resolved (file not found, URL unreachable, PR not accessible, or the tool needed to fetch it is not installed/available), tell the user immediately rather than launching agents with no content.
 
 ---
 
@@ -42,13 +43,15 @@ Read/fetch all relevant content so you can inject it into each subagent's prompt
 
 **Local file path**: Read the file. If it references other files, read direct references (one level deep). Do not chase transitive references.
 
-**GitHub PR URL**: Use `gh pr view <url> --json title,body,baseRefName,headRefName,files,reviews,comments` and `gh pr diff <url>` to get the full PR context including the diff, description, and any existing review comments.
+**GitHub PR URL**: If a PR-reading tool is available (for example the `gh` CLI, authenticated against the host), use it to fetch the full PR context: title, body, diff, description, and any existing review comments. With `gh` that is `gh pr view <url> --json title,body,baseRefName,headRefName,files,reviews,comments` and `gh pr diff <url>`.
 
-**Notion page URL**: Use the Notion MCP tools to fetch the page content.
+**Notion page URL**: If a Notion integration (an MCP server or similar) is available, use it to fetch the page content.
 
-**General URL**: Use WebFetch to retrieve the content.
+**General URL**: If a web-fetching tool is available, use it to retrieve the content.
 
 **Inline text**: The user typed the idea directly. Use it as-is.
+
+If the tool needed for a target type is not available (no PR reader for a PR URL, no Notion integration for a Notion page, no web fetch for a general URL), do not fail silently: tell the user which capability is missing and ask them to paste the content directly, then treat it as inline text and proceed. This gathering happens in the convener's own turn, so a permission prompt here is acceptable; the parallel subagent launch must never prompt (see Step 7).
 
 ### Depth and size limits
 
@@ -147,6 +150,14 @@ Each subagent prompt must instruct the agent to:
 - If they disagree with something, explain exactly why with specific references to the content
 - Keep the response proportionate to the content being reviewed. A one-paragraph idea warrants a short review; a large PR diff warrants a longer one. Do not pad short reviews to fill space, and do not truncate important analysis on large reviews to hit a target.
 
+### Operating constraints for every subagent
+
+The base prompt must also make each reviewer autonomous and self-contained, so a parallel launch never blocks on a permission prompt or a question no one will answer. Include these instructions:
+- You are a read-only reviewer. Everything you need is already in this prompt; treat it as your complete and only source.
+- Do not use any tools. Do not read files, fetch URLs, run commands, or query MCP servers. Do not modify anything.
+- Do not pause to ask for permission, confirmation, or clarification. You are one of several reviewers running in parallel and non-interactively; no one will answer.
+- If something referenced in the content is missing or was summarised, do not try to obtain it. Give your best-effort verdict from what you have and record what was missing under a short "Limitations" note (this feeds the Blind spots section of the report).
+
 Do NOT inject your own opinions, analysis, or framing into the subagent prompts. Give them the content and their role, nothing more.
 
 ---
@@ -156,7 +167,7 @@ Do NOT inject your own opinions, analysis, or framing into the subagent prompts.
 Before launching subagents, tell the user:
 - What content type you detected, and invite them to correct it if wrong (e.g. "I've classified this as a Proposal. If that's wrong, tell me and I'll re-run with the right format.")
 - How many council members you're summoning
-- A rough cost signal: "This will launch N Opus agents with ~Xk words of context each."
+- A rough cost signal: "This will launch N agents with ~Xk words of context each." Name the actual model only if it is known (the session default, or the user's `model=` override from Step 1); do not assume or name a specific model.
 - A table showing each member's persona and bias position
 - The base prompt you're sending (summarised, not the full injected content)
 - If any content was summarised or truncated, note what and why
@@ -167,11 +178,14 @@ This step is informational, not a blocking gate. Display it and proceed to launc
 
 ## Step 7: Launch all subagents in parallel
 
-Launch ALL council members simultaneously in a single message using the Agent tool. Every subagent must use:
-- `model: "opus"` (the most capable Opus model available)
-- Maximum reasoning effort and the largest available context window. Where the harness exposes effort or context-length settings for subagents, set them to maximum. Otherwise rely on inheritance from the parent session, which should be running the strongest configuration (e.g. Opus at 1M context, max effort).
+Launch ALL council members simultaneously in a single message, each as a parallel subagent (in Claude Code, the Task tool). Every subagent must use:
+- The session's default model (whatever the harness is currently configured to use). Do NOT pin a specific model or name a model family or version. Only pass an explicit model if the user asked for one via the `model=` override in Step 1.
+- The highest reasoning effort and largest context window the harness exposes for subagents. Where those settings are available, set them to maximum; otherwise rely on inheritance from the parent session.
+- The harness's built-in general-purpose subagent type. Do NOT reference a custom-named agent that may not exist in every install.
 
-All agents run in parallel. Do NOT launch them sequentially.
+Because the base prompt (Step 5) makes each reviewer a read-only reasoner over content that is already injected, no tool access is required, and that is what keeps the parallel launch from ever blocking on a permission prompt. All content must already be gathered (Step 2) before launching.
+
+All agents run in parallel. Do NOT launch them sequentially. Some harnesses cap how many subagents run concurrently; above that cap the harness may queue or batch the extras rather than running every member at once. That is expected behaviour, not a failure, and just means a longer wall-clock for large N. Still issue every member in a single message.
 
 ### Failure handling
 
@@ -179,7 +193,7 @@ If a subagent fails, errors, or returns malformed output:
 - For transient failures (timeouts, rate limits), a single automatic retry is permitted. Note the retry in the report.
 - For non-transient failures, do not retry. Note the error in the report.
 
-**Quorum rule**: if fewer than half the council returns valid responses (i.e. fewer than ceil(N/2)), do NOT synthesise. Instead, tell the user the council is inquorate and offer to re-run. A lopsided council (e.g. only the advocate survived from N=3) is worse than no council because it looks like consensus.
+**Quorum rule**: quorum requires both (a) at least ceil(N/2) valid responses, AND (b) surviving members that are not all on the same side of the pro-to-anti spectrum. If either fails, do NOT synthesise: tell the user the council is inquorate (or that it collapsed to one side) and offer to re-run. A lopsided council (e.g. only the advocate survived from N=3, or a single survivor at N=2) is worse than no council because it looks like consensus.
 
 If the council is quorate but a failed agent was at an extreme of the bias spectrum (the strongest advocate or strongest critic), flag this prominently in the synthesis as a material gap in perspective coverage.
 
@@ -193,12 +207,12 @@ Once all subagents return, produce a structured report. The synthesis should be 
 
 Start with a one-line summary of the overall council sentiment. Include a brief calibration note early in the report: all council members share the same underlying model, so unanimous agreement may reflect shared model biases rather than genuine independent consensus. This note should be brief (one sentence) and not dominate the report, but it must be present to prevent users from over-trusting convergent results.
 
-**Council verdict**: Show each member's verdict, confidence, and token usage in a compact table:
+**Council verdict**: Show each member's verdict and confidence in a compact table. Include a token-usage column only if the harness exposes per-subagent token usage:
 
-| # | Bias | Persona | Verdict | Confidence | Tokens |
+| # | Bias | Persona | Verdict | Confidence | Tokens* |
 |---|------|---------|---------|------------|--------|
 
-The token count comes from the agent result metadata. Report each member's total token usage. At the bottom of the table, show the total tokens used by the entire council.
+*If per-subagent token usage is exposed in the agent result metadata on this platform, include the Tokens column and a total row at the bottom. If it is not available, omit the column and total entirely rather than estimating. Never fabricate token counts.
 
 **Points of agreement**: Things that multiple agents converged on. If all agents agree on something, flag it explicitly as high-signal consensus. These are the most reliable findings.
 
@@ -220,7 +234,7 @@ The token count comes from the agent result metadata. Report each member's total
 
 - Never fabricate subagent responses. If a subagent fails or returns an error, report that honestly.
 - The whole point is fresh-context review. Do NOT prime subagents with your own opinions or analysis.
-- British English in all output (per user preferences).
+- Match the language and locale of the user's request; do not impose a specific spelling variant.
 - Be concise in the report. The user wants signal, not volume. Use bullets, not paragraphs.
 - If the user asks for a very large council (say 20+), warn that this will take time and tokens, but proceed if they confirm.
 - If the content is very large (e.g. a massive PR diff), include a note about what was included vs summarised so the user knows the review scope.
