@@ -42,6 +42,11 @@ symlinks:
     description: "Mermaid diagram styling skill"
     create_parent: true
 
+  - source: claude/skills/verify-and-prove
+    destination: ~/.claude/skills/verify-and-prove
+    description: "Verify-and-prove skill: agents check their work and attach screenshots/GIFs/text proof to PRs"
+    create_parent: true
+
   # Claude rules (auto-loaded guidelines)
   - source: claude/rules/pr-descriptions.md
     destination: ~/.claude/rules/pr-descriptions.md
